@@ -21,8 +21,8 @@ filter_words = [
 filter_within = [
             # Remove events from Jan 1, 2022 -> Jan 2, 2022
             [
-                #  YYYY,MM,DD,HH,MM,SS,MS, Timezone
-                dt(2022, 1, 1, 0, 0, 0, 0, tzinfo=utc),
+                #  YYYY,MM,DD,HH,MM,SS,MS
+                dt(2022, 1, 1, 0, 0, 0, 0),
                 dt(2022, 1, 2)
             ],
         ]

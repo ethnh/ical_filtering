@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import filter
 import requests
 from icalendar import Calendar

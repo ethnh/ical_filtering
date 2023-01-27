@@ -16,21 +16,37 @@ def filter_long_events(cal):
 
 # A function that takes a calendar and returns a new calendar with all events,
 # except those that include a certain sting in the summary
-def filter_by_name(cal, name):
+def filter_by_words(cal, words):
     new_cal = Calendar()
     for component in cal.subcomponents():
         if type(component) == Event:
-            if name not in component.get('summary'):
-                new_cal.add_component(component)
+            for word in words:
+                append = True
+                if word in component.get('summary'):
+                    append = False
+                if append:
+                    new_cal.add_component(component)
     return new_cal
 
 
 # A function that takes a calendar and returns a new calendar without events
 # that occur within a certain time range
-def filter_by_time(cal, start, end):
+def filter_by_times(cal, times):
+    # Times should be a list of datetime.datetime objs such that
+    # Times = [
+    #           [ Start_Time: datetime.datetime,
+    #             End_Time: datetime.datetime,
+    #           ],
+    #           ...
+    #         ]
+
     new_cal = Calendar()
     for component in cal.subcomponents():
         if type(component) == Event:
-            if not (start < component.get('dtstart').dt < end):
+            append = True
+            for start, end in times:
+                if start < component.get('dtstart').dt < end:
+                    append = False
+            if append:
                 new_cal.add_component(component)
     return new_cal

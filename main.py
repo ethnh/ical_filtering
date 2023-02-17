@@ -1,49 +1,43 @@
 #!/usr/bin/python3
 
-import filter
+from filter import apply_filters
 import requests
+import os
 from icalendar import Calendar
-from config import urls, filter_long_events, filter_words, filter_within, to_save_as
+from config import urls, filter_options, to_save_as
 
 def main():
 
     calendars = []
 
-    if urls == []:
+    if not urls:
         print("No URLs supplied, quitting")
         exit(1)
 
     
     # Download all calendars
     for url in urls:
-        if "webcal://" in url:
-            url = "https://" + url[9::]
-        if "http" not in url:
+        if not url.startswith(("http", "webcal")):
             print(f"Warning: Url {url} is not recognized as a valid calendar URL.")
+            continue
+        url = url.replace("webcal://", "https://")
+        response = requests.get(url)
+        calendars.append(Calendar.from_ical(response.content))
 
-        with requests.get(url) as get:
-            calendars.append(Calendar.from_ical(bytes(get.text, 'utf-8')))
-    
 
     # Concat calendars
     concatenated_calendar = Calendar()
     for calendar in calendars:
-        for component in calendar.subcomponents:
-            concatenated_calendar.add_component(component)
+        concatenated_calendar.subcomponents.extend(calendar.subcomponents)
 
-    
+
     # Filter calendars
-    new_calendar = concatenated_calendar
-    if filter_long_events:
-        new_calendar = filter.filter_long_events(new_calendar)
+    new_calendar = apply_filters(concatenated_calendar, filter_options)
 
-    if filter_words != []:
-        new_calendar = filter.filter_by_words(new_calendar, filter_words)
+    # Save and quit
+    if not os.path.exists(os.path.dirname(to_save_as)):
+        os.makedirs(os.path.dirname(to_save_as))
 
-    if filter_within != []:
-        new_calendar = filter.filter_by_times(new_calendar, filter_within)
-
-    # save and quit
     with open(to_save_as, 'wb') as f:
         f.write(new_calendar.to_ical())
 

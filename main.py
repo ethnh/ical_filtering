@@ -7,6 +7,8 @@ from icalendar import Calendar
 from config import urls, filter_options, to_save_as
 
 def main():
+    print("Coded by Ehtan Hindmarsh. Hi mom!")
+    print("Fun fact: did you know running is faster than walking?")
 
     calendars = []
 
@@ -14,7 +16,6 @@ def main():
         print("No URLs supplied, quitting")
         exit(1)
 
-    
     # Download all calendars
     for url in urls:
         if not url.startswith(("http", "webcal")):

@@ -7,8 +7,10 @@ from datetime import timedelta, datetime, date
 def filter_long_events(cal):
     events = filter(lambda x: type(x) == Event and x.decoded('dtend') - x.decoded('dtstart') <= timedelta(days=1),cal.subcomponents)
     new_cal = Calendar()
+
     for event in events:
         new_cal.add_component(event)
+
     return new_cal
 
 
@@ -16,10 +18,12 @@ def filter_long_events(cal):
 # except those that include a certain sting in the summary
 def filter_by_words(cal, words):
     new_cal = Calendar()
+
     for component in cal.subcomponents:
         if type(component) == Event:
             if not any(word in component.get('summary') for word in words):
                 new_cal.add_component(component)
+
     return new_cal
 
 
@@ -35,12 +39,15 @@ def filter_by_times(cal, times):
     #         ]
 
     new_cal = Calendar()
+
     for component in cal.subcomponents:
         if isinstance(component, Event):
             event_start = component.decoded('dtstart')
             event_end = component.decoded('dtend')
+
             if type(event_start) == date:
                 event_start = datetime.combine(event_start, datetime.min.time())
+
             if type(event_end) == date:
                 event_end = datetime.combine(event_end, datetime.min.time())
 

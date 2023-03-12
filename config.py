@@ -8,7 +8,7 @@ to_save_as = "/tmp/new_webcal.ical"
 urls = [
         "http://www.webcal.guru/en-US/download_calendar?calendar_instance_id=169",
         "webcal://www.webcal.guru/en-US/download_calendar?calendar_instance_id=142",
-        ]
+]
 
 # Filter options
 filter_options = {
